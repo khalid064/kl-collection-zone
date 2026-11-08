@@ -1,7 +1,7 @@
 // KL COLLECTION ZONE — demo storefront
 // Replace this with your WhatsApp Business number, country code included, digits only.
 // Example Bangladesh format: 8801XXXXXXXXX
-const WHATSAPP_NUMBER = "8801XXXXXXXXX";
+const WHATSAPP_NUMBER = "8801826511926";
 
 const products = [
   {id:1,name:"Studio Wireless Headphones",category:"Audio",price:2450,tag:"BESTSELLER",rating:"4.8",image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700"},
