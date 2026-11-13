@@ -1,4 +1,6 @@
-const WHATSAPP_NUMBER = "8801826511926";
+// Supabase public frontend settings. Never put a service_role key here.
+const SUPABASE_URL = "https://jkrqqbnvugatrutakgoz.supabase.co";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
 
 const products = [
   {
@@ -284,49 +286,72 @@ checkoutModal.addEventListener("click", event => {
   if (event.target === checkoutModal) closeCheckout();
 });
 
-document.getElementById("checkoutForm").addEventListener("submit", event => {
+document.getElementById("checkoutForm").addEventListener("submit", async event => {
   event.preventDefault();
+
   if (!cart.length) {
     alert("আপনার কার্ট খালি!");
     closeCheckout();
     return;
   }
-  if (WHATSAPP_NUMBER === "8801XXXXXXXXX") {
-    alert("script.js ফাইলে আপনার WhatsApp নম্বর যোগ করুন।");
+  if (!selectedDistrict || !districtSelect.value || !upazilaSelect.value) {
+    alert("অনুগ্রহ করে জেলা ও উপজেলা নির্বাচন করুন।");
+    return;
+  }
+  if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === "PASTE_YOUR_SUPABASE_ANON_KEY_HERE") {
+    alert("Supabase anon key এখনো script.js-এ বসানো হয়নি।");
     return;
   }
 
-  const form = new FormData(event.currentTarget);
-  const customerName = String(form.get("customerName")).trim();
-  const customerPhone = String(form.get("customerPhone")).trim();
-  const districtName = selectedDistrict?.bn_name || selectedDistrict?.name || "";
-  const upazilaName = String(form.get("upazila")).trim();
-  const address = String(form.get("deliveryAddress")).trim();
-  const note = String(form.get("orderNote") || "").trim();
-  const subtotal = cartSubtotal();
-  const delivery = currentDeliveryCharge();
-  const total = subtotal + delivery;
+  const formElement = event.currentTarget;
+  const submitButton = formElement.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "অর্ডার জমা হচ্ছে...";
 
-  const orderItems = cart.map(item =>
-    `• ${item.name} × ${item.qty} = ${money(item.price * item.qty)}`
-  ).join("\n");
+  try {
+    const form = new FormData(formElement);
+    const payload = {
+      customerName: String(form.get("customerName") || "").trim(),
+      customerPhone: String(form.get("customerPhone") || "").trim(),
+      district: selectedDistrict.bn_name || selectedDistrict.name,
+      upazila: String(form.get("upazila") || "").trim(),
+      address: String(form.get("deliveryAddress") || "").trim(),
+      note: String(form.get("orderNote") || "").trim(),
+      items: cart.map(item => ({ id: item.id, qty: item.qty }))
+    };
 
-  const message =
-    `নতুন COD অর্ডার — KL COLLECTION ZONE\n\n` +
-    `কাস্টমারের নাম: ${customerName}\n` +
-    `মোবাইল: ${customerPhone}\n` +
-    `জেলা: ${districtName}\n` +
-    `উপজেলা: ${upazilaName}\n` +
-    `ঠিকানা: ${address}\n` +
-    (note ? `অতিরিক্ত নির্দেশনা: ${note}\n` : "") +
-    `\nঅর্ডার:\n${orderItems}\n\n` +
-    `পণ্যের মূল্য: ${money(subtotal)}\n` +
-    `ডেলিভারি চার্জ: ${money(delivery)}\n` +
-    `সর্বমোট: ${money(total)}\n\n` +
-    `পেমেন্ট: Cash on Delivery (COD)`;
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/create-order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+      },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || result.message || "অর্ডার জমা দেওয়া যায়নি।");
 
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
+    alert(
+      `আপনার অর্ডার সফলভাবে জমা হয়েছে!\\nঅর্ডার আইডি: ${result.order_number}\\nসর্বমোট: ${money(result.total)}\\nপেমেন্ট: Cash on Delivery`
+    );
+    cart = [];
+    renderCart();
+    formElement.reset();
+    selectedDistrict = null;
+    upazilaSelect.innerHTML = '<option value="">আগে জেলা নির্বাচন করুন</option>';
+    upazilaSelect.disabled = true;
+    districtSelect.value = "";
+    updateCheckoutSummary();
+    closeCheckout();
+  } catch (error) {
+    console.error("Order submission error:", error);
+    alert(error.message || "দুঃখিত, অর্ডার জমা হয়নি। আবার চেষ্টা করুন।");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalButtonText;
+  }
 });
 
 document.getElementById("year").textContent = new Date().getFullYear();
