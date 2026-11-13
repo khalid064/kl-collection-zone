@@ -187,30 +187,145 @@ document.querySelectorAll(".filter").forEach(button => {
   });
 });
 
-document.getElementById("checkoutBtn").addEventListener("click", () => {
+const checkoutModal = document.getElementById("checkoutModal");
+const districtSelect = document.getElementById("districtSelect");
+const upazilaSelect = document.getElementById("upazilaSelect");
+let bangladeshDistricts = [];
+let selectedDistrict = null;
+
+function cartSubtotal() {
+  return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+}
+
+function currentDeliveryCharge() {
+  if (!selectedDistrict) return 0;
+  // Dhaka district is treated as the inside-Dhaka delivery zone.
+  const isDhaka = selectedDistrict.bn_name === "ঢাকা" ||
+    selectedDistrict.name.toLowerCase() === "dhaka";
+  return isDhaka ? 70 : 130;
+}
+
+function updateCheckoutSummary() {
+  const subtotal = cartSubtotal();
+  const charge = currentDeliveryCharge();
+  document.getElementById("checkoutSubtotal").textContent = money(subtotal);
+  document.getElementById("deliveryCharge").textContent = selectedDistrict
+    ? money(charge)
+    : "জেলা নির্বাচন করুন";
+  document.getElementById("checkoutTotal").textContent = money(subtotal + charge);
+}
+
+async function loadBangladeshLocations() {
+  districtSelect.disabled = true;
+  districtSelect.innerHTML = '<option value="">জেলা লোড হচ্ছে...</option>';
+  try {
+    const response = await fetch("https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json");
+    if (!response.ok) throw new Error("Location list could not be loaded");
+    const divisions = await response.json();
+    bangladeshDistricts = divisions.flatMap(division =>
+      (division.districts || []).map(district => ({
+        ...district,
+        divisionName: division.bn_name || division.name
+      }))
+    ).sort((a, b) => (a.bn_name || a.name).localeCompare(b.bn_name || b.name, "bn"));
+
+    districtSelect.innerHTML = '<option value="">জেলা নির্বাচন করুন</option>' +
+      bangladeshDistricts.map((district, index) =>
+        `<option value="${index}">${district.bn_name || district.name}</option>`
+      ).join("");
+    districtSelect.disabled = false;
+  } catch (error) {
+    districtSelect.innerHTML = '<option value="">জেলা লোড হয়নি — ইন্টারনেট সংযোগ পরীক্ষা করুন</option>';
+    alert("জেলা ও উপজেলার তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ চালু করে পেজটি রিফ্রেশ করুন।");
+  }
+}
+
+districtSelect.addEventListener("change", () => {
+  const index = districtSelect.value;
+  selectedDistrict = index === "" ? null : bangladeshDistricts[Number(index)];
+  upazilaSelect.innerHTML = '<option value="">উপজেলা নির্বাচন করুন</option>';
+
+  if (!selectedDistrict) {
+    upazilaSelect.disabled = true;
+  } else {
+    const upazilas = [...(selectedDistrict.upazilas || [])]
+      .sort((a, b) => (a.bn_name || a.name).localeCompare(b.bn_name || b.name, "bn"));
+    upazilaSelect.innerHTML += upazilas.map(upazila =>
+      `<option value="${upazila.bn_name || upazila.name}">${upazila.bn_name || upazila.name}</option>`
+    ).join("");
+    upazilaSelect.disabled = upazilas.length === 0;
+    if (upazilas.length === 0) {
+      upazilaSelect.innerHTML = '<option value="">উপজেলার তথ্য পাওয়া যায়নি</option>';
+    }
+  }
+  updateCheckoutSummary();
+});
+
+function openCheckout() {
   if (!cart.length) {
-    alert("Your cart is empty!");
+    alert("আপনার কার্ট খালি!");
     return;
   }
+  hideCart();
+  checkoutModal.classList.add("show");
+  checkoutModal.setAttribute("aria-hidden", "false");
+  updateCheckoutSummary();
+  loadBangladeshLocations();
+}
 
+function closeCheckout() {
+  checkoutModal.classList.remove("show");
+  checkoutModal.setAttribute("aria-hidden", "true");
+}
+
+document.getElementById("checkoutBtn").addEventListener("click", openCheckout);
+document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
+checkoutModal.addEventListener("click", event => {
+  if (event.target === checkoutModal) closeCheckout();
+});
+
+document.getElementById("checkoutForm").addEventListener("submit", event => {
+  event.preventDefault();
+  if (!cart.length) {
+    alert("আপনার কার্ট খালি!");
+    closeCheckout();
+    return;
+  }
   if (WHATSAPP_NUMBER === "8801XXXXXXXXX") {
-    alert("Please add your WhatsApp number in script.js first.");
+    alert("script.js ফাইলে আপনার WhatsApp নম্বর যোগ করুন।");
     return;
   }
 
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.qty, 0
-  );
+  const form = new FormData(event.currentTarget);
+  const customerName = String(form.get("customerName")).trim();
+  const customerPhone = String(form.get("customerPhone")).trim();
+  const districtName = selectedDistrict?.bn_name || selectedDistrict?.name || "";
+  const upazilaName = String(form.get("upazila")).trim();
+  const address = String(form.get("deliveryAddress")).trim();
+  const note = String(form.get("orderNote") || "").trim();
+  const subtotal = cartSubtotal();
+  const delivery = currentDeliveryCharge();
+  const total = subtotal + delivery;
 
   const orderItems = cart.map(item =>
-    `${item.name} x ${item.qty} = ${money(item.price * item.qty)}`
+    `• ${item.name} × ${item.qty} = ${money(item.price * item.qty)}`
   ).join("\n");
 
   const message =
-    `Hello KL COLLECTION ZONE!\n\nI want to order:\n${orderItems}\n\nTotal: ${money(total)}`;
+    `নতুন COD অর্ডার — KL COLLECTION ZONE\n\n` +
+    `কাস্টমারের নাম: ${customerName}\n` +
+    `মোবাইল: ${customerPhone}\n` +
+    `জেলা: ${districtName}\n` +
+    `উপজেলা: ${upazilaName}\n` +
+    `ঠিকানা: ${address}\n` +
+    (note ? `অতিরিক্ত নির্দেশনা: ${note}\n` : "") +
+    `\nঅর্ডার:\n${orderItems}\n\n` +
+    `পণ্যের মূল্য: ${money(subtotal)}\n` +
+    `ডেলিভারি চার্জ: ${money(delivery)}\n` +
+    `সর্বমোট: ${money(total)}\n\n` +
+    `পেমেন্ট: Cash on Delivery (COD)`;
 
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-
   window.open(url, "_blank");
 });
 

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KL COLLECTION ZONE | Premium Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <a href="#" class="logo">KL COLLECTION <span>ZONE</span></a>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#categories">Categories</a>
+    <a href="#shop">Shop</a>
+    <a href="#about">About</a>
+  </nav>
+  <button class="cart-button" id="openCart">
+    Cart (<span id="cartCount">0</span>)
+  </button>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-content">
+    <p class="eyebrow">WELCOME TO KL COLLECTION ZONE</p>
+    <h1>Upgrade Your <span>Everyday Life.</span></h1>
+    <p>Discover quality gadgets, electronics and accessories.</p>
+    <a href="#shop" class="primary-button">Explore Collection</a>
+  </div>
+</section>
+
+<section id="categories">
+  <h2>Shop by Category</h2>
+  <div class="filters">
+    <button class="filter active" data-filter="All">All</button>
+    <button class="filter" data-filter="Audio">Audio</button>
+    <button class="filter" data-filter="Mobile">Mobile</button>
+    <button class="filter" data-filter="Wearables">Wearables</button>
+    <button class="filter" data-filter="Accessories">Accessories</button>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">OUR PRODUCTS</p>
+      <h2>Explore Collection</h2>
+    </div>
+    <div class="tools">
+      <input id="searchInput" type="search" placeholder="Search products...">
+      <select id="sortSelect">
+        <option value="default">Default</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<section class="about" id="about">
+  <p class="eyebrow">ABOUT US</p>
+  <h2>KL COLLECTION ZONE</h2>
+  <p>Your destination for electronics, smart gadgets and everyday accessories.</p>
+  <p>Quality Products. Premium Experience.</p>
+</section>
+
+<footer>
+  <h3>KL COLLECTION ZONE</h3>
+  <p>Quality Products. Premium Experience.</p>
+  <p>© <span id="year"></span> KL COLLECTION ZONE</p>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h2>Your Cart</h2>
+    <button id="closeCart" class="close-button">×</button>
+  </div>
+
+  <div id="cartItems"></div>
+
+  <div class="cart-footer">
+    <h3>Subtotal: <span id="subtotal">৳0</span></h3>
+    <button id="checkoutBtn" class="primary-button full-button">
+      অর্ডার করুন
+    </button>
+  </div>
+</aside>
+
+<div class="checkout-modal" id="checkoutModal" aria-hidden="true">
+  <div class="checkout-panel">
+    <div class="checkout-heading">
+      <div>
+        <p class="eyebrow">CASH ON DELIVERY</p>
+        <h2>চেকআউট</h2>
+      </div>
+      <button type="button" class="close-button" id="closeCheckout" aria-label="Close">×</button>
+    </div>
+
+    <form id="checkoutForm">
+      <label for="customerName">কাস্টমার নাম</label>
+      <input id="customerName" name="customerName" type="text" placeholder="আপনার নাম লিখুন" required>
+
+      <label for="customerPhone">কাস্টমার নাম্বার</label>
+      <input id="customerPhone" name="customerPhone" type="tel" inputmode="tel" placeholder="01XXXXXXXXX" pattern="01[0-9]{9}" required>
+
+      <label for="districtSelect">জেলা নির্বাচন করুন</label>
+      <select id="districtSelect" name="district" required>
+        <option value="">জেলা নির্বাচন করুন</option>
+      </select>
+
+      <label for="upazilaSelect">উপজেলা নির্বাচন করুন</label>
+      <select id="upazilaSelect" name="upazila" required disabled>
+        <option value="">আগে জেলা নির্বাচন করুন</option>
+      </select>
+
+      <label for="deliveryAddress">বিস্তারিত ডেলিভারি ঠিকানা</label>
+      <textarea id="deliveryAddress" name="deliveryAddress" rows="3" placeholder="বাসা/রোড/এলাকা/গ্রাম লিখুন" required></textarea>
+
+      <label for="orderNote">অতিরিক্ত নির্দেশনা <span>(ঐচ্ছিক)</span></label>
+      <textarea id="orderNote" name="orderNote" rows="2" placeholder="কোনো অতিরিক্ত নির্দেশনা থাকলে লিখুন"></textarea>
+
+      <div class="order-summary">
+        <div><span>পণ্যের মূল্য</span><strong id="checkoutSubtotal">৳০</strong></div>
+        <div><span>ডেলিভারি চার্জ</span><strong id="deliveryCharge">জেলা নির্বাচন করুন</strong></div>
+        <div class="grand-total"><span>সর্বমোট</span><strong id="checkoutTotal">৳০</strong></div>
+      </div>
+      <p class="cod-note">পেমেন্ট পদ্ধতি: ক্যাশ অন ডেলিভারি (পণ্য হাতে পেয়ে মূল্য পরিশোধ)</p>
+      <button class="primary-button full-button" type="submit">WhatsApp-এ অর্ডার নিশ্চিত করুন</button>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
