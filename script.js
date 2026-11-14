@@ -1,6 +1,6 @@
 // Supabase public frontend settings. Never put a service_role key here.
 const SUPABASE_URL = "https://jkrqqbnvugatrutakgoz.supabase.co";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
+const SUPABASE_ANON_KEY = "sb_publishable_N0qDjtf5y_pVhwKwXAQRrQ_CKgjk3m_";
 
 const products = [
   {
