@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | KL COLLECTION ZONE</title>
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">KL COLLECTION <span>ZONE</span></a>
+  <div class="top-actions"><a href="index.html">ওয়েবসাইট দেখুন</a><button id="logoutBtn" class="btn secondary" hidden>Logout</button></div>
+</header>
+<main class="wrap">
+  <section id="loginPanel" class="panel login-panel">
+    <p class="eyebrow">SECURE ADMIN AREA</p><h1>Admin Login</h1>
+    <p class="muted">শুধু অনুমোদিত Admin অ্যাকাউন্ট দিয়ে প্রবেশ করুন।</p>
+    <form id="loginForm">
+      <label for="email">ইমেইল</label><input id="email" type="email" autocomplete="username" required>
+      <label for="password">পাসওয়ার্ড</label><input id="password" type="password" autocomplete="current-password" required>
+      <button class="btn" type="submit">Login</button>
+      <p id="loginMessage" class="message" role="status"></p>
+    </form>
+  </section>
+
+  <section id="dashboardPanel" hidden>
+    <div class="heading-row"><div><p class="eyebrow">ORDER MANAGEMENT</p><h1>অর্ডার ড্যাশবোর্ড</h1><p id="welcome" class="muted"></p></div><button id="refreshBtn" class="btn secondary">Refresh</button></div>
+    <div class="stats">
+      <article class="stat"><span>মোট অর্ডার</span><strong id="totalCount">0</strong></article>
+      <article class="stat"><span>Pending</span><strong id="pendingCount">0</strong></article>
+      <article class="stat"><span>Confirmed</span><strong id="confirmedCount">0</strong></article>
+    </div>
+    <div class="toolbar"><input id="searchInput" type="search" placeholder="Order ID / নাম / ফোন দিয়ে খুঁজুন"><select id="statusFilter"><option value="All">সব Status</option><option>Pending</option><option>Confirmed</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select></div>
+    <p id="dashboardMessage" class="message" role="status"></p>
+    <div id="ordersList" class="orders"></div>
+  </section>
+</main>
+<script src="admin.js"></script>
+</body>
+</html>
