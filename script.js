@@ -1,4 +1,5 @@
-// Supabase public frontend settings. Never put a service_role key here.
+// Supabase public frontend settings.
+// Use the Publishable key from Supabase Project Settings > API Keys.
 const SUPABASE_URL = "https://jkrqqbnvugatrutakgoz.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_N0qDjtf5y_pVhwKwXAQRrQ_CKgjk3m_";
 
@@ -50,7 +51,7 @@ let cart = [];
 let activeFilter = "All";
 
 const money = amount =>
-  "৳" + amount.toLocaleString("en-BD");
+  "৳" + Number(amount || 0).toLocaleString("en-BD");
 
 const productGrid = document.getElementById("productGrid");
 
@@ -100,6 +101,8 @@ function renderProducts() {
 function addToCart(id) {
   const product = products.find(p => p.id === id);
   const existing = cart.find(item => item.id === id);
+
+  if (!product) return;
 
   if (existing) {
     existing.qty++;
@@ -161,6 +164,8 @@ document.getElementById("cartItems").addEventListener("click", event => {
   const change = Number(button.dataset.change);
   const item = cart.find(i => i.id === id);
 
+  if (!item) return;
+
   item.qty += change;
 
   if (item.qty <= 0) {
@@ -192,6 +197,7 @@ document.querySelectorAll(".filter").forEach(button => {
 const checkoutModal = document.getElementById("checkoutModal");
 const districtSelect = document.getElementById("districtSelect");
 const upazilaSelect = document.getElementById("upazilaSelect");
+
 let bangladeshDistricts = [];
 let selectedDistrict = null;
 
@@ -201,65 +207,108 @@ function cartSubtotal() {
 
 function currentDeliveryCharge() {
   if (!selectedDistrict) return 0;
-  // Dhaka district is treated as the inside-Dhaka delivery zone.
-  const isDhaka = selectedDistrict.bn_name === "ঢাকা" ||
-    selectedDistrict.name.toLowerCase() === "dhaka";
+
+  const isDhaka =
+    selectedDistrict.bn_name === "ঢাকা" ||
+    String(selectedDistrict.name || "").toLowerCase() === "dhaka";
+
   return isDhaka ? 70 : 130;
 }
 
 function updateCheckoutSummary() {
   const subtotal = cartSubtotal();
   const charge = currentDeliveryCharge();
+
   document.getElementById("checkoutSubtotal").textContent = money(subtotal);
-  document.getElementById("deliveryCharge").textContent = selectedDistrict
-    ? money(charge)
-    : "জেলা নির্বাচন করুন";
-  document.getElementById("checkoutTotal").textContent = money(subtotal + charge);
+
+  document.getElementById("deliveryCharge").textContent =
+    selectedDistrict ? money(charge) : "জেলা নির্বাচন করুন";
+
+  document.getElementById("checkoutTotal").textContent =
+    money(subtotal + charge);
 }
 
 async function loadBangladeshLocations() {
   districtSelect.disabled = true;
   districtSelect.innerHTML = '<option value="">জেলা লোড হচ্ছে...</option>';
+
   try {
-    const response = await fetch("https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json");
-    if (!response.ok) throw new Error("Location list could not be loaded");
+    const response = await fetch(
+      "https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json"
+    );
+
+    if (!response.ok) {
+      throw new Error("Location list could not be loaded");
+    }
+
     const divisions = await response.json();
+
     bangladeshDistricts = divisions.flatMap(division =>
       (division.districts || []).map(district => ({
         ...district,
         divisionName: division.bn_name || division.name
       }))
-    ).sort((a, b) => (a.bn_name || a.name).localeCompare(b.bn_name || b.name, "bn"));
+    ).sort((a, b) =>
+      (a.bn_name || a.name).localeCompare(
+        b.bn_name || b.name,
+        "bn"
+      )
+    );
 
-    districtSelect.innerHTML = '<option value="">জেলা নির্বাচন করুন</option>' +
+    districtSelect.innerHTML =
+      '<option value="">জেলা নির্বাচন করুন</option>' +
       bangladeshDistricts.map((district, index) =>
         `<option value="${index}">${district.bn_name || district.name}</option>`
       ).join("");
+
     districtSelect.disabled = false;
+
   } catch (error) {
-    districtSelect.innerHTML = '<option value="">জেলা লোড হয়নি — ইন্টারনেট সংযোগ পরীক্ষা করুন</option>';
-    alert("জেলা ও উপজেলার তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ চালু করে পেজটি রিফ্রেশ করুন।");
+    console.error("Location loading error:", error);
+
+    districtSelect.innerHTML =
+      '<option value="">জেলা লোড হয়নি — ইন্টারনেট সংযোগ পরীক্ষা করুন</option>';
+
+    alert(
+      "জেলা ও উপজেলার তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ চালু করে পেজটি রিফ্রেশ করুন।"
+    );
   }
 }
 
 districtSelect.addEventListener("change", () => {
   const index = districtSelect.value;
-  selectedDistrict = index === "" ? null : bangladeshDistricts[Number(index)];
-  upazilaSelect.innerHTML = '<option value="">উপজেলা নির্বাচন করুন</option>';
+
+  selectedDistrict =
+    index === "" ? null : bangladeshDistricts[Number(index)];
+
+  upazilaSelect.innerHTML =
+    '<option value="">উপজেলা নির্বাচন করুন</option>';
 
   if (!selectedDistrict) {
     upazilaSelect.disabled = true;
   } else {
     const upazilas = [...(selectedDistrict.upazilas || [])]
-      .sort((a, b) => (a.bn_name || a.name).localeCompare(b.bn_name || b.name, "bn"));
+      .sort((a, b) =>
+        (a.bn_name || a.name).localeCompare(
+          b.bn_name || b.name,
+          "bn"
+        )
+      );
+
     upazilaSelect.innerHTML += upazilas.map(upazila =>
-      `<option value="${upazila.bn_name || upazila.name}">${upazila.bn_name || upazila.name}</option>`
+      `<option value="${upazila.bn_name || upazila.name}">
+        ${upazila.bn_name || upazila.name}
+      </option>`
     ).join("");
+
     upazilaSelect.disabled = upazilas.length === 0;
+
     if (upazilas.length === 0) {
-      upazilaSelect.innerHTML = '<option value="">উপজেলার তথ্য পাওয়া যায়নি</option>';
+      upazilaSelect.innerHTML =
+        '<option value="">উপজেলার তথ্য পাওয়া যায়নি</option>';
     }
   }
+
   updateCheckoutSummary();
 });
 
@@ -268,9 +317,11 @@ function openCheckout() {
     alert("আপনার কার্ট খালি!");
     return;
   }
+
   hideCart();
   checkoutModal.classList.add("show");
   checkoutModal.setAttribute("aria-hidden", "false");
+
   updateCheckoutSummary();
   loadBangladeshLocations();
 }
@@ -282,9 +333,86 @@ function closeCheckout() {
 
 document.getElementById("checkoutBtn").addEventListener("click", openCheckout);
 document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
+
 checkoutModal.addEventListener("click", event => {
   if (event.target === checkoutModal) closeCheckout();
 });
+
+// ===== Animated Order Success Popup =====
+
+function showOrderSuccess(result) {
+  const overlay = document.createElement("div");
+  overlay.className = "order-success-overlay";
+
+  overlay.innerHTML = `
+    <div class="order-success-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="orderSuccessTitle">
+
+      <div class="success-icon">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="success-circle" cx="50" cy="50" r="30"></circle>
+          <path class="success-tick" d="M35 51 L45 61 L66 39"></path>
+        </svg>
+      </div>
+
+      <h2 id="orderSuccessTitle">অর্ডার সফল হয়েছে!</h2>
+
+      <p class="success-subtitle">
+        আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।
+      </p>
+
+      <div class="success-details">
+        <div>
+          <span>অর্ডার আইডি</span>
+          <strong>${escapeHTML(result.order_number || "N/A")}</strong>
+        </div>
+
+        <div>
+          <span>সর্বমোট</span>
+          <strong class="success-total">${money(result.total)}</strong>
+        </div>
+
+        <div>
+          <span>পেমেন্ট</span>
+          <strong>Cash on Delivery</strong>
+        </div>
+      </div>
+
+      <button type="button" class="success-close">
+        ঠিক আছে
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const close = () => overlay.remove();
+
+  overlay.querySelector(".success-close").addEventListener("click", close);
+
+  overlay.addEventListener("click", event => {
+    if (event.target === overlay) close();
+  });
+}
+
+// Escape HTML characters before displaying server data.
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, character => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    };
+
+    return entities[character];
+  });
+}
+
+// ===== Checkout Form Submission =====
 
 document.getElementById("checkoutForm").addEventListener("submit", async event => {
   event.preventDefault();
@@ -294,23 +422,36 @@ document.getElementById("checkoutForm").addEventListener("submit", async event =
     closeCheckout();
     return;
   }
+
   if (!selectedDistrict || !districtSelect.value || !upazilaSelect.value) {
     alert("অনুগ্রহ করে জেলা ও উপজেলা নির্বাচন করুন।");
     return;
   }
-  if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === "PASTE_YOUR_SUPABASE_ANON_KEY_HERE") {
-    alert("Supabase anon key এখনো script.js-এ বসানো হয়নি।");
+
+  if (
+    !SUPABASE_ANON_KEY ||
+    SUPABASE_ANON_KEY === "REPLACE_WITH_YOUR_CURRENT_PUBLISHABLE_KEY"
+  ) {
+    alert("Supabase Publishable key বসানো হয়নি।");
     return;
   }
 
   const formElement = event.currentTarget;
   const submitButton = formElement.querySelector('button[type="submit"]');
+
+  if (!submitButton) {
+    alert("Submit button পাওয়া যায়নি।");
+    return;
+  }
+
   const originalButtonText = submitButton.textContent;
+
   submitButton.disabled = true;
   submitButton.textContent = "অর্ডার জমা হচ্ছে...";
 
   try {
     const form = new FormData(formElement);
+
     const payload = {
       customerName: String(form.get("customerName") || "").trim(),
       customerPhone: String(form.get("customerPhone") || "").trim(),
@@ -318,43 +459,89 @@ document.getElementById("checkoutForm").addEventListener("submit", async event =
       upazila: String(form.get("upazila") || "").trim(),
       address: String(form.get("deliveryAddress") || "").trim(),
       note: String(form.get("orderNote") || "").trim(),
-      items: cart.map(item => ({ id: item.id, qty: item.qty }))
+      items: cart.map(item => ({
+        id: item.id,
+        qty: item.qty
+      }))
     };
 
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/create-order`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-      },
-      body: JSON.stringify(payload)
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.error || result.message || "অর্ডার জমা দেওয়া যায়নি।");
+    if (
+      !payload.customerName ||
+      !payload.customerPhone ||
+      !payload.upazila ||
+      !payload.address
+    ) {
+      throw new Error("সব প্রয়োজনীয় তথ্য পূরণ করুন।");
+    }
 
-    alert(
-      `আপনার অর্ডার সফলভাবে জমা হয়েছে!\\nঅর্ডার আইডি: ${result.order_number}\\nসর্বমোট: ${money(result.total)}\\nপেমেন্ট: Cash on Delivery`
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/create-order`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify(payload)
+      }
     );
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        result.error ||
+        result.message ||
+        "অর্ডার জমা দেওয়া যায়নি।"
+      );
+    }
+
+    if (!result.order_number || result.total == null) {
+      throw new Error(
+        "অর্ডার জমা হয়েছে কিনা নিশ্চিত করা যায়নি। অনুগ্রহ করে Admin Dashboard পরীক্ষা করুন।"
+      );
+    }
+
+    // Show success animation after successful order response.
+    showOrderSuccess(result);
+
+    // Clear cart after successful submission.
     cart = [];
     renderCart();
+
     formElement.reset();
+
     selectedDistrict = null;
-    upazilaSelect.innerHTML = '<option value="">আগে জেলা নির্বাচন করুন</option>';
+    upazilaSelect.innerHTML =
+      '<option value="">আগে জেলা নির্বাচন করুন</option>';
+
     upazilaSelect.disabled = true;
     districtSelect.value = "";
+
     updateCheckoutSummary();
     closeCheckout();
+
   } catch (error) {
     console.error("Order submission error:", error);
-    alert(error.message || "দুঃখিত, অর্ডার জমা হয়নি। আবার চেষ্টা করুন।");
+
+    alert(
+      error.message ||
+      "দুঃখিত, অর্ডার জমা হয়নি। আবার চেষ্টা করুন।"
+    );
+
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = originalButtonText;
   }
 });
 
-document.getElementById("year").textContent = new Date().getFullYear();
+// ===== Footer Year =====
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+// ===== Initial Render =====
 
 renderProducts();
 renderCart();
