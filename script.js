@@ -1,6 +1,6 @@
 // Supabase public frontend settings. Never put a service_role key here.
 const SUPABASE_URL = "https://jkrqqbnvugatrutakgoz.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_N0qDjtf5y_pVhwKwXAQRr_Q_CKgjk3m_";
+const SUPABASE_ANON_KEY = "sb_publishable_N0qDjtf5y_pVhwKwXAQRrQ_CKgjk3m_";
 
 const products = [
   { id: 1, name: "WATCH ULTRA 3 Smart Watch", category: "Wearables", price: 5000, tag: "NEW ARRIVAL", description: "Smartwatch with touchscreen, Bluetooth calling, camera and app features. Includes black and orange straps and charging accessories.", image: "https://res.cloudinary.com/r6twyjul/image/upload/f_auto,q_auto/1000072281" },
