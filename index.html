@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -8,30 +9,142 @@
 </head>
 <body>
 
+<!-- Announcement Bar -->
+<div class="announcement-bar">
+  <div class="announcement-inner">
+    <p>🚚 <strong>Free Delivery</strong> on orders over ৳2,000</p>
+    <span class="announcement-divider">|</span>
+    <p>Shop Smart, Live Better!</p>
+  </div>
+</div>
+
+<!-- Main Header -->
 <header class="header">
-  <a href="#" class="logo">KL COLLECTION <span>ZONE</span></a>
+  <a href="#home" class="logo">
+    <span class="logo-icon">KL</span>
+    <span class="logo-text">
+      <strong>KL COLLECTION <span>ZONE</span></strong>
+      <small>Shop Smart • Live Better</small>
+    </span>
+  </a>
+
+  <div class="header-search">
+    <input id="searchInput" type="search" placeholder="Search for products...">
+    <button type="button" class="search-button" aria-label="Search">⌕</button>
+  </div>
+
   <nav>
-    <a href="#home">Home</a>
-    <a href="#categories">Categories</a>
-    <a href="#shop">Shop</a>
-    <a href="#about">About</a>
+    <a class="nav-active" href="#home">⌂ <span>Shop</span></a>
+    <a href="#categories">▦ <span>Categories</span></a>
+    <a href="#shop">▣ <span>Products</span></a>
+    <a href="#about">♙ <span>About</span></a>
   </nav>
+
   <button class="cart-button" id="openCart">
-    Cart (<span id="cartCount">0</span>)
+    🛒 <span>Cart</span> (<span id="cartCount">0</span>)
   </button>
 </header>
 
+<!-- Hero -->
 <section class="hero" id="home">
   <div class="hero-content">
-    <p class="eyebrow">WELCOME TO KL COLLECTION ZONE</p>
-    <h1>Upgrade Your <span>Everyday Life.</span></h1>
-    <p>Discover quality gadgets, electronics and accessories.</p>
-    <a href="#shop" class="primary-button">Explore Collection</a>
+
+    <div class="hero-badge">
+      🚀 Premium Quality &nbsp; • &nbsp; Best Price
+    </div>
+
+    <h1>Upgrade Your<br>
+      <span>Everyday.</span>
+    </h1>
+
+    <p>
+      Discover premium gadgets, fashion and essentials.
+    </p>
+
+    <a href="#shop" class="primary-button">
+      Shop Now <span>→</span>
+    </a>
+
+    <div class="hero-benefits">
+      <span>✓ Secure Payment</span>
+      <i></i>
+      <span>↻ Easy Return</span>
+      <i></i>
+      <span>♧ Customer Support</span>
+    </div>
+
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-visual-glow"></div>
+    <div class="hero-visual-text">
+      <span>SHOP SMART</span>
+      <h2>Live Better.</h2>
+      <p>Discover your next favourite.</p>
+    </div>
   </div>
 </section>
 
-<section id="categories">
-  <h2>Shop by Category</h2>
+<!-- Quick Category Cards -->
+<section class="quick-categories" id="categories">
+
+  <a href="#shop" class="category-shortcut">
+    <div class="category-emoji">📱</div>
+    <strong>Gadgets</strong>
+    <span>›</span>
+  </a>
+
+  <a href="#shop" class="category-shortcut">
+    <div class="category-emoji">👕</div>
+    <strong>Fashion</strong>
+    <span>›</span>
+  </a>
+
+  <a href="#shop" class="category-shortcut">
+    <div class="category-emoji">🎧</div>
+    <strong>Accessories</strong>
+    <span>›</span>
+  </a>
+
+  <a href="#shop" class="category-shortcut">
+    <div class="category-emoji">👟</div>
+    <strong>Footwear</strong>
+    <span>›</span>
+  </a>
+
+  <a href="#shop" class="category-shortcut">
+    <div class="category-emoji">🏠</div>
+    <strong>Home & Living</strong>
+    <span>›</span>
+  </a>
+
+  <a href="#shop" class="category-shortcut">
+    <div class="category-emoji">🎁</div>
+    <strong>Deals</strong>
+    <span>›</span>
+  </a>
+
+</section>
+
+<!-- Products -->
+<section id="shop">
+
+  <div class="section-heading">
+    <div class="section-title-group">
+      <p class="eyebrow">OUR COLLECTION</p>
+      <h2>Featured Products</h2>
+    </div>
+
+    <div class="tools">
+      <select id="sortSelect">
+        <option value="default">Sort: Default</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Existing filter functionality preserved -->
   <div class="filters">
     <button class="filter active" data-filter="All">All</button>
     <button class="filter" data-filter="Audio">Audio</button>
@@ -39,40 +152,38 @@
     <button class="filter" data-filter="Wearables">Wearables</button>
     <button class="filter" data-filter="Accessories">Accessories</button>
   </div>
-</section>
 
-<section id="shop">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">OUR PRODUCTS</p>
-      <h2>Explore Collection</h2>
-    </div>
-    <div class="tools">
-      <input id="searchInput" type="search" placeholder="Search products...">
-      <select id="sortSelect">
-        <option value="default">Default</option>
-        <option value="low">Price: Low to High</option>
-        <option value="high">Price: High to Low</option>
-      </select>
-    </div>
-  </div>
-
+  <!-- Existing product rendering -->
   <div class="product-grid" id="productGrid"></div>
+
 </section>
 
+<!-- About -->
 <section class="about" id="about">
-  <p class="eyebrow">ABOUT US</p>
-  <h2>KL COLLECTION ZONE</h2>
-  <p>Your destination for electronics, smart gadgets and everyday accessories.</p>
-  <p>Quality Products. Premium Experience.</p>
+  <div class="about-inner">
+    <p class="eyebrow">ABOUT US</p>
+    <h2>KL COLLECTION ZONE</h2>
+    <p>
+      Your destination for electronics, smart gadgets
+      and everyday accessories.
+    </p>
+    <p>Quality Products. Premium Experience.</p>
+  </div>
 </section>
 
+<!-- Footer -->
 <footer>
-  <h3>KL COLLECTION ZONE</h3>
-  <p>Quality Products. Premium Experience.</p>
-  <p>© <span id="year"></span> KL COLLECTION ZONE</p>
+  <div class="footer-content">
+    <h3>KL COLLECTION <span>ZONE</span></h3>
+    <p>Shop Smart • Live Better</p>
+    <p>Quality Products. Premium Experience.</p>
+  </div>
+  <div class="footer-bottom">
+    © <span id="year"></span> KL COLLECTION ZONE. All rights reserved.
+  </div>
 </footer>
 
+<!-- Existing Cart -->
 <div class="overlay" id="overlay"></div>
 
 <aside class="cart-drawer" id="cartDrawer">
@@ -91,8 +202,10 @@
   </div>
 </aside>
 
+<!-- Existing Checkout -->
 <div class="checkout-modal" id="checkoutModal" aria-hidden="true">
   <div class="checkout-panel">
+
     <div class="checkout-heading">
       <div>
         <p class="eyebrow">CASH ON DELIVERY</p>
@@ -102,11 +215,15 @@
     </div>
 
     <form id="checkoutForm">
+
       <label for="customerName">কাস্টমার নাম</label>
-      <input id="customerName" name="customerName" type="text" placeholder="আপনার নাম লিখুন" required>
+      <input id="customerName" name="customerName" type="text"
+        placeholder="আপনার নাম লিখুন" required>
 
       <label for="customerPhone">কাস্টমার নাম্বার</label>
-      <input id="customerPhone" name="customerPhone" type="tel" inputmode="tel" placeholder="01XXXXXXXXX" pattern="01[0-9]{9}" required>
+      <input id="customerPhone" name="customerPhone" type="tel"
+        inputmode="tel" placeholder="01XXXXXXXXX"
+        pattern="01[0-9]{9}" required>
 
       <label for="districtSelect">জেলা নির্বাচন করুন</label>
       <select id="districtSelect" name="district" required>
@@ -119,18 +236,28 @@
       </select>
 
       <label for="deliveryAddress">বিস্তারিত ডেলিভারি ঠিকানা</label>
-      <textarea id="deliveryAddress" name="deliveryAddress" rows="3" placeholder="বাসা/রোড/এলাকা/গ্রাম লিখুন" required></textarea>
+      <textarea id="deliveryAddress" name="deliveryAddress" rows="3"
+        placeholder="বাসা/রোড/এলাকা/গ্রাম লিখুন" required></textarea>
 
       <label for="orderNote">অতিরিক্ত নির্দেশনা <span>(ঐচ্ছিক)</span></label>
-      <textarea id="orderNote" name="orderNote" rows="2" placeholder="কোনো অতিরিক্ত নির্দেশনা থাকলে লিখুন"></textarea>
+      <textarea id="orderNote" name="orderNote" rows="2"
+        placeholder="কোনো অতিরিক্ত নির্দেশনা থাকলে লিখুন"></textarea>
 
       <div class="order-summary">
         <div><span>পণ্যের মূল্য</span><strong id="checkoutSubtotal">৳০</strong></div>
         <div><span>ডেলিভারি চার্জ</span><strong id="deliveryCharge">জেলা নির্বাচন করুন</strong></div>
         <div class="grand-total"><span>সর্বমোট</span><strong id="checkoutTotal">৳০</strong></div>
       </div>
-      <p class="cod-note">পেমেন্ট পদ্ধতি: ক্যাশ অন ডেলিভারি (পণ্য হাতে পেয়ে মূল্য পরিশোধ)</p>
-      <button class="primary-button full-button" type="submit">Place Order</button>
+
+      <p class="cod-note">
+        পেমেন্ট পদ্ধতি: ক্যাশ অন ডেলিভারি
+        (পণ্য হাতে পেয়ে মূল্য পরিশোধ)
+      </p>
+
+      <button class="primary-button full-button" type="submit">
+        Place Order
+      </button>
+
     </form>
   </div>
 </div>
