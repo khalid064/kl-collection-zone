@@ -545,3 +545,37 @@ document.getElementById("year").textContent =
 
 renderProducts();
 renderCart();
+
+
+
+/* ===== Theme Switcher ===== */
+
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const themeLabel = document.getElementById("themeLabel");
+
+function applyTheme(theme) {
+  document.body.classList.toggle("light-theme", theme === "light");
+
+  if (themeIcon) {
+    themeIcon.textContent = theme === "light" ? "🌙" : "☀️";
+  }
+
+  if (themeLabel) {
+    themeLabel.textContent = theme === "light" ? "Dark" : "Light";
+  }
+}
+
+const savedTheme = localStorage.getItem("kl-theme") || "dark";
+applyTheme(savedTheme);
+
+if (themeToggle) {
+  themeToggle.addEventListener("click", function () {
+    const isLight = document.body.classList.contains("light-theme");
+
+    const newTheme = isLight ? "dark" : "light";
+
+    localStorage.setItem("kl-theme", newTheme);
+    applyTheme(newTheme);
+  });
+}
