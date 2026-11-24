@@ -8,34 +8,34 @@ const products = [
     id: 1,
     name: "WATCH ULTRA 3 Smart Watch",
     category: "Wearables",
-    price: 5000,
+    price: 4889,
     tag: "NEW ARRIVAL",
     description: "Smartwatch with touchscreen, Bluetooth calling, camera and app features. Includes black and orange straps and charging accessories.",
     image: "https://res.cloudinary.com/r6twyjul/image/upload/f_auto,q_auto/1000072281"
   },
   {
     id: 2,
-    name: "Wireless Headphones",
-    category: "Audio",
-    price: 1500,
+    name: "Mini Hair Straightener ",
+    category: "Gadgets",
+    price: 499,
     tag: "POPULAR",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700"
+    image: "https://res.cloudinary.com/r6twyjul/image/upload/f_auto,q_auto/1000060206"
   },
   {
     id: 3,
-    name: "Bluetooth Speaker",
+    name: " M90 pro Bluetooth Headphones ",
     category: "Audio",
-    price: 1650,
+    price: 649,
     tag: "POPULAR",
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=700"
+    image: "https://res.cloudinary.com/r6twyjul/image/upload/f_auto,q_auto/1000059070"
   },
   {
     id: 4,
-    name: "Wireless Earbuds",
+    name: "Awei T13 Pro True Wireless Earbuds",
     category: "Audio",
-    price: 1200,
+    price: 1299,
     tag: "NEW",
-    image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=700"
+    image: "https://res.cloudinary.com/r6twyjul/image/upload/f_auto,q_auto/1000058557"
   },
   {
     id: 5,
@@ -267,7 +267,7 @@ async function loadBangladeshLocations() {
     console.error("Location loading error:", error);
 
     districtSelect.innerHTML =
-      '<option value="">জেলা লোড হয়নি — ইন্টারনেট সংযোগ পরীক্ষা করুন</option>';
+      '<option value="">জেলা লোড হয়নি -- ইন্টারনেট সংযোগ পরীক্ষা করুন</option>';
 
     alert(
       "জেলা ও উপজেলার তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ চালু করে পেজটি রিফ্রেশ করুন।"
@@ -579,3 +579,7 @@ if (themeToggle) {
     applyTheme(newTheme);
   });
 }
+
+
+
+
