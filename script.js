@@ -19,6 +19,7 @@ const products = [
     category: "Gadgets",
     price: 499,
     tag: "POPULAR",
+    description: "স্টাইল, কমফোর্ট আর পারফরম্যান্স—সবকিছু একসাথে চাইলে Awei T13 Pro হতে পারে আপনার পারফেক্ট চয়েস 😍 ডেইলি ইউজ, গেমিং কিংবা মিউজিক—সব ক্ষেত্রেই দেবে স্মুথ এক্সপেরিয়েন্স ✨",
     image: "https://res.cloudinary.com/r6twyjul/image/upload/f_auto,q_auto/1000060206"
   },
   {
