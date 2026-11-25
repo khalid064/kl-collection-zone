@@ -7,7 +7,7 @@ const products = [
   {
     id: 1,
     name: "WATCH ULTRA 3 Smart Watch",
-    category: "Wearables",
+    category: "Watch",
     price: 4889,
     tag: "NEW ARRIVAL",
     description: "Smartwatch with touchscreen, Bluetooth calling, camera and app features. Includes black and orange straps and charging accessories.",
@@ -45,7 +45,7 @@ const products = [
     price: 1749,
     tag: "New",
     description:" 100% Water Resistant",
-    image: "https://kommodo.ai/i/Eh1jIA8BNcRSMGpwIEQL"
+    image: "https://res.cloudinary.com/r6twyjul/image/upload/f_auto,q_auto/1000065005"
   }
 ];
 
