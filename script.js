@@ -40,11 +40,12 @@ const products = [
   },
   {
     id: 5,
-    name: "Power Bank",
-    category: "Mobile",
-    price: 1750,
-    tag: "ESSENTIAL",
-    image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=700"
+    name: "Poedagar Luxury Couple Watch",
+    category: "Watch",
+    price: 1749,
+    tag: "New",
+    description:" 100% Water Resistant",
+    image: "https://kommodo.ai/i/Eh1jIA8BNcRSMGpwIEQL"
   }
 ];
 
